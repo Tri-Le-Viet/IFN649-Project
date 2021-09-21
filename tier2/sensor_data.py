@@ -2,11 +2,11 @@ import paho.mqtt.publish as publish
 import serial
 import json
 
-def process_sensor_data(ip, topicBase):
+def process_sensor_data(ip, topicBase, num):
     try:
         ser = serial.Serial("/dev/rfcomm0", 9600) # TODO: change if serial is different
     except serial.serialutil.SerialException:
-        print("Could not open serial port")
+        print(f"Could not open serial port for sensor cluster {num}, check Bluetooth connection")
         exit()
 
     while True:
