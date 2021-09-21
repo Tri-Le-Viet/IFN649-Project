@@ -15,6 +15,8 @@ def process_sensor_data(ip, topicBase):
         cookedserial = rawserial.decode('utf-8').strip('\r\n')
         print(cookedserial)
 
+        #TODO: add crypto and integrity checking
+
     	# data from teensy is sent as JSON for easier decoding
         data = json.loads(cookedserial)
         for entry in data:

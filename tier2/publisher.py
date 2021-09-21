@@ -16,7 +16,10 @@ except KeyError:
   print("Missing environment variables, check env_vars.env before running")
   exit()
 
-params = {} #TODO: figure out what params are needed
+params = {
+    "key":apikey
+    "q":"-27.478226,153.029255"
+    } #TODO: figure out what params are needed
 
 numSensors = 1
 threads = []
@@ -26,7 +29,7 @@ for sensor in range(numSensors):
     threads.append(newThread)
 
 while True:
-    res = requests.get("link here", params=params) #TODO: add error handling
+    res = requests.get("http://api.weatherapi.com/v1/current.json", params=params) #TODO: add error handling
     weatherData = res.json()
     #send data to mqtt (for testing just print is good enough)
     time.sleep(300) #TODO: adjust time
