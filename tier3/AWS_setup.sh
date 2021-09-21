@@ -10,5 +10,7 @@ pip3 install paho-MQTT
 pip3 install dotenv
 pip3 install requests
 pip3 install pyserial
+pip3 install flask
 
-sudo apt install mysql-server
+sudo yum install mysql-server
+sudo yum install node-js
