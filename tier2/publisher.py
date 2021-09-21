@@ -8,7 +8,7 @@ from sensor_data import *
 # all topics follow format IFN649/Group21/topic_name
 topicBase = "IFN649/Group21/"
 
-load_dotenv("env_vars.env")
+load_dotenv()
 try:
   apikey = os.environ["WEATHER_API_KEY"]
   ip = os.environ["SERVER_IP"]
