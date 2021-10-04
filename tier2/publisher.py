@@ -1,37 +1,52 @@
 import os
 from dotenv import load_dotenv
-import requests
-import time
 import threading
-from sensor_data import *
+#import bluetooth as bt
 
-# all topics follow format IFN649/Group21/topic_name
-topicBase = "IFN649/Group21/"
+from SensorCluster import *
+from API import *
 
-load_dotenv()
-try:
-  apikey = os.environ["WEATHER_API_KEY"]
-  ip = os.environ["SERVER_IP"]
-  location = os.environ["LOCATION"]
-except KeyError:
-  print("Missing environment variables, check env_vars.env before running")
-  exit()
+def search(clusterNames, addresses):
+    devices = bt.discover_devices(lookup_names=True)
 
-params = {
-    "key":apikey,
-    "q":location
-    } #TODO: figure out what params are needed
+    for dev in devices:
+        for i in range(len(clusterNames)):
+            if dev[1] == clusterNames[i]:
+                addresses[i] = dev[0]
 
-numSensors = 1
-threads = []
-for sensor in range(numSensors):
-    newThread = threading.Thread(target=process_sensor_data, args=(ip, topicBase, sensor))
-    newThread.start()
-    threads.append(newThread)
+def weather_thread(threads, weatherAPI):
+    weather = threading.Thread(target=API.fetch())
+    weather.start()
+    threads[-1] = weather
 
-while True:
-    res = requests.get("http://api.weatherapi.com/v1/current.json", params=params) #TODO: add error handling
-    weatherData = res.json()
-    print(weatherData)
-    #send data to mqtt (for testing just print is good enough)
-    time.sleep(300) #TODO: adjust time
+if __name__ == "__main__":
+    load_dotenv()
+    try:
+        topicBase = os.environ["TOPIC_NAME"]
+        apikey = os.environ["WEATHER_API_KEY"]
+        ip = os.environ["SERVER_IP"]
+        location = os.environ["LOCATION"]
+        clusterNames = os.environ["CLUSTER_NAMES"].split(" ")
+        numClusters = len(clusterNames)
+        params = {"key":apikey, "q":location}
+    except KeyError:
+        print("Missing environment variables, check .env before running")
+        exit()
+
+    addresses = [""] * numClusters
+    threads = [None] * (numClusters + 1)
+    clusters = [None] * numClusters
+    search(clusterNames, addresses)
+
+    for i in range(numClusters):
+        clusters[i] = SensorCluster(addresses[i], clusterNames[i], ip)
+        clusters[i].connect()
+        newThread = threading.Thread(target=clusters[i].read())
+        newThread.start()
+        threads[i] = newThread
+
+    weatherAPI = API("http://api.weatherapi.com/v1/current.json", params)
+    weather_thread(weatherAPI)
+
+    while True:
+        handle_input(threads, clusters)
