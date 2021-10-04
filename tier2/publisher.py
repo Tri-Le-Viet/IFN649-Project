@@ -6,13 +6,7 @@ import threading
 from SensorCluster import *
 from API import *
 
-def search(clusterNames, addresses):
-    devices = bt.discover_devices(lookup_names=True)
 
-    for dev in devices:
-        for i in range(len(clusterNames)):
-            if dev[1] == clusterNames[i]:
-                addresses[i] = dev[0]
 
 def weather_thread(threads, weatherAPI):
     weather = threading.Thread(target=API.fetch())
@@ -36,7 +30,7 @@ if __name__ == "__main__":
     addresses = [""] * numClusters
     threads = [None] * (numClusters + 1)
     clusters = [None] * numClusters
-    search(clusterNames, addresses)
+    search_devices(clusterNames, addresses)
 
     for i in range(numClusters):
         clusters[i] = SensorCluster(addresses[i], clusterNames[i], ip)
