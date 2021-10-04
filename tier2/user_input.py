@@ -10,13 +10,13 @@ def enable(threads, clusters, index):
         pass #TODO: add error message + logging
 
 """ Terminates existing thread for a cluster by disconnecting
-	the MQTT client. Messages for the particular cluster are then
-	ignored until a new thread is started again
+    the MQTT client. Messages for the particular cluster are then
+    ignored until a new thread is started again
 
-	Parameters:
-		threads (list[threading.Thread]): list of currently running threads
-		clusters (list[cluster]): list of predefined clusters
-		index (int): cluster number to disable
+    Parameters:
+        threads (list[threading.Thread]): list of currently running threads
+        clusters (list[cluster]): list of predefined clusters
+        index (int): cluster number to disable
 """
 def disable(threads, clusters, index):
     cluster = clusters[index]
@@ -25,13 +25,13 @@ def disable(threads, clusters, index):
 
 """ Alters the status of a cluster (enabling/disabling)
 
-	Parameters:
+    Parameters:
         command (string): a u command starting in either
-			"disable" or "enable"
+            "disable" or "enable"
 
-		threads (list[
-	clusters (list[cluster]): list of clusters to subscribe to
-		disab (bool): indicates that a disable or enable command
+        threads (list[
+    clusters (list[cluster]): list of clusters to subscribe to
+        disab (bool): indicates that a disable or enable command
 """
 def altercluster(command, threads, clusters, disab=True):
     if (disab):
@@ -63,14 +63,14 @@ def altercluster(command, threads, clusters, disab=True):
 
 def search(command, threads, clusters):
     commmand = command.split(' ')
-    if (len(command != 2))
+    if (len(command != 2)):
         print("Please enter a single cluster number")
     else:
         try:
             n = int(command[1]) - 1
             if (n < 0 or n >= len(clusters)):
                 print("No such cluster")
-            elif (cluster[n].found && cluster[n].connected):
+            elif (cluster[n].found and cluster[n].connected):
                 print(f"{n + 1} is already found and connected")
             else:
                 address = search_specific(cluster[n].name)
@@ -80,7 +80,7 @@ def search(command, threads, clusters):
                     cluster.set_address(address)
                     ans = ""
 
-                    while (ans != "Y" && in != "N")
+                    while (ans != "Y" and ans != "N"):
                         ans = input("Sensor found, do you want to connect? Y/N")
                         if (ans == "Y"):
                             enable(threads, clusters, n)
@@ -108,8 +108,8 @@ def printHelp():
     """)
 
 """ Prints the current status
-	Parameters:
-		clusters (list[cluster]): list of clusters being monitored
+    Parameters:
+        clusters (list[cluster]): list of clusters being monitored
 """
 def status(clusters):
     for i in range(len(clusters)):
@@ -120,38 +120,37 @@ def status(clusters):
             print(f"{i + 1}: {cluster.name} - Not found")
 
 def display(clusters):
-	print("Displaying data, press enter to stop...")
-	for cluster in clusters:
-		cluster.display = True
+    print("Displaying data, press enter to stop...")
+    for cluster in clusters:
+        cluster.display = True
 
-	stop = input()
-	for cluster in clusters:
-		cluster.display = False
+    stop = input()
+    for cluster in clusters:
+        cluster.display = False
 
 """ Respond to user commands
-	Parameters:
-		threads (list[threading.Thread]): list of currently running threads
-		clusters (list[cluster]): list of predefined clusters
+    Parameters:
+        threads (list[threading.Thread]): list of currently running threads
+        clusters (list[cluster]): list of predefined clusters
 """
 def handle_input(threads, clusters):
-	command = input("Enter command: ")
-	if (type(command) == str):
-		if (command == "help"):
-			printHelp()
-		elif (command == "status"):
-			status(clusters)
-		elif (command == "display"):
-			display(clusters)
-		elif (command == "kill"):
-			for i in range(len(clusters)):
-				disable(threads, clusters, i)
-			.close()
-			exit()
-		elif (command.startswith("disable")):
-			altercluster(command, threads, clusters)
-		elif (command.startswith("enable")):
-			altercluster(command, threads, clusters, disab=False)
-		else:
-			invalid()
-	else:
-		invalid()
+    command = input("Enter command: ")
+    if (type(command) == str):
+        if (command == "help"):
+            printHelp()
+        elif (command == "status"):
+            status(clusters)
+        elif (command == "display"):
+            display(clusters)
+        elif (command == "kill"):
+            for i in range(len(clusters)):
+                disable(threads, clusters, i)
+            exit()
+        elif (command.startswith("disable")):
+            altercluster(command, threads, clusters)
+        elif (command.startswith("enable")):
+            altercluster(command, threads, clusters, disab=False)
+        else:
+            invalid()
+    else:
+        invalid()

@@ -1,11 +1,11 @@
 import paho.mqtt.publish as publish
 import bluetooth as bt
+import json
 
 class SensorCluster:
     def __init__(self, address, name, ip):
         self.address = address
         self.name = name
-        self.sock = bt.BluetoothSocket(bt.RFCOMM)
         self.ip = ip
         self.display = False
         self.connected = False
@@ -20,10 +20,13 @@ class SensorCluster:
 
     def connect(self):
         try:
-            sock.connect((self.address, 1))
+            self.sock = bt.BluetoothSocket(bt.RFCOMM)
+            self.sock.connect((self.address, 1))
             self.connected = True
             return 0
         except:
+            print("Failed to connect")
+            print(self.address)
             return 1
 
 
@@ -46,5 +49,7 @@ class SensorCluster:
                 data = json.loads(msg)
                 for entry in data:
                     publish.single(self.name+entry, data[entry], hostname=self.ip)
+                if self.display:
+                    print(f"{self.name} data: {data}")
             else:
                 msg += byte
