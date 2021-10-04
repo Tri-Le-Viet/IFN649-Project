@@ -3,9 +3,10 @@ import bluetooth as bt
 import json
 
 class SensorCluster:
-    def __init__(self, address, name, ip):
+    def __init__(self, address, name, topic, ip):
         self.address = address
         self.name = name
+        self.topic = topic
         self.ip = ip
         self.display = False
         self.connected = False
@@ -18,7 +19,7 @@ class SensorCluster:
     def set_address(self, address):
         self.address = address
 
-    def connect(self):
+    def connect(self): #TODO: add error logging instead of return
         try:
             self.sock = bt.BluetoothSocket(bt.RFCOMM)
             self.sock.connect((self.address, 1))
@@ -29,8 +30,7 @@ class SensorCluster:
             print(self.address)
             return 1
 
-
-    def disconnect(self):
+    def disconnect(self): #TODO: add error logging instead of return
         try:
             sock.close()
             self.connected = False
@@ -41,14 +41,16 @@ class SensorCluster:
     def read(self):
         msg = ""
         while(self.connected):
-            byte = self.sock.recv(1)
-            if byte == b"{": # new packet
+            byte = self.sock.recv(1) #TODO check recv against closed socket
+            if len(byte) == 0: # attempt to reconnect if disconnected
+                self.connect()
+            elif byte == b"{": # new packet
                 msg = byte
             elif byte == b"\n": #end of packet
                 msg = msg.decode("utf-8").strip("\r")
                 data = json.loads(msg)
                 for entry in data:
-                    publish.single(self.name+entry, data[entry], hostname=self.ip)
+                    publish.single(f"{self.topic}{entry}", data[entry], hostname=self.ip)
                 if self.display:
                     print(f"{self.name} data: {data}")
             else:

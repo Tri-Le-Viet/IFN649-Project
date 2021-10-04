@@ -34,7 +34,7 @@ if __name__ == "__main__":
     search_devices(clusterNames, addresses)
 
     for i in range(numClusters):
-        clusters[i] = SensorCluster(addresses[i], clusterNames[i], ip)
+        clusters[i] = SensorCluster(addresses[i], clusterNames[i], topicBase, ip)
         clusters[i].connect()
         newThread = threading.Thread(target=clusters[i].read)
         newThread.start()

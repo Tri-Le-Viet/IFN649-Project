@@ -18,5 +18,4 @@ def search_specific(name):
     for dev in devices:
         if dev[1] == name:
             return dev[0]
-
     return ""

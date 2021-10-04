@@ -145,6 +145,7 @@ def handle_input(threads, clusters):
         elif (command == "kill"):
             for i in range(len(clusters)):
                 disable(threads, clusters, i)
+            threads[-1].running.set()
             exit()
         elif (command.startswith("disable")):
             altercluster(command, threads, clusters)
