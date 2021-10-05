@@ -12,12 +12,13 @@ class API:
 
     def fetch(self):
         while not self.running.is_set():
-            res = requests.get(self.link, params=self.params) #TODO: add error handling
-            weatherData = res.json()
-            
+            res = requests.get(self.link, params=self.params)
 
-            if (self.display):
-                print(weatherData)
+            if (res.status_code == 200):
+                weatherData = res.json()
+                if (self.display):
+                    print(weatherData)
 
-
-            time.sleep(300) #TODO: adjust time
+            else: #TODO add error logging
+                pass
+            time.sleep(100) #TODO: adjust time for final

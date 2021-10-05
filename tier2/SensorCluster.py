@@ -41,17 +41,18 @@ class SensorCluster:
     def read(self):
         msg = ""
         while(self.connected):
-            byte = self.sock.recv(1) #TODO check recv against closed socket
-            if len(byte) == 0: # attempt to reconnect if disconnected
+            try:
+                byte = self.sock.recv(1) #TODO check recv against closed socket
+                if byte == b"{": # new packet
+                    msg = byte
+                elif byte == b"\n": #end of packet
+                    msg = msg.decode("utf-8").strip("\r")
+                    data = json.loads(msg)
+                    for entry in data:
+                        publish.single(f"{self.topic}{entry}", data[entry], hostname=self.ip)
+                    if self.display:
+                        print(f"{self.name} data: {data}")
+                else:
+                    msg += byte
+            except: #attempt to reconnect if disconnected
                 self.connect()
-            elif byte == b"{": # new packet
-                msg = byte
-            elif byte == b"\n": #end of packet
-                msg = msg.decode("utf-8").strip("\r")
-                data = json.loads(msg)
-                for entry in data:
-                    publish.single(f"{self.topic}{entry}", data[entry], hostname=self.ip)
-                if self.display:
-                    print(f"{self.name} data: {data}")
-            else:
-                msg += byte
