@@ -3,11 +3,10 @@ from bluetooth_functions import *
 def enable(threads, clusters, index):
     cluster = clusters[index]
     if (cluster.connect() == 0):
-        new_thread = threading.Thread(target=threadFunction, args=(cluster,))
+        cluster.running = True
+        new_thread = threading.Thread(target=cluster.read, args=(cluster,))
         threads[index] = new_thread
         new_thread.start()
-    else:
-        pass #TODO: add error message + logging
 
 """ Terminates existing thread for a cluster by disconnecting
     the MQTT client. Messages for the particular cluster are then
@@ -20,6 +19,7 @@ def enable(threads, clusters, index):
 """
 def disable(threads, clusters, index):
     cluster = clusters[index]
+    cluster.running = False
     cluster.disconnect()
     threads[index].join()
 
@@ -100,10 +100,11 @@ def invalid():
 def printHelp():
     print("""Commands are:
     Help: prints help
-    Display: displays all subscribed clusters
+    Display: displays all received data from clusters
     Disable (n or 'all'): disables either specified cluster or all clusters
     Enable (n or 'all'): enables either specified cluster or all clusters
     Kill: quits the program and shuts down all threads
+    Search n: searches all bluetooth devices for the specified cluster, only use if device is shown as "Not Found"
     Status: prints the current status (i.e. connected/disconnected) of sensors
     """)
 
@@ -119,21 +120,23 @@ def status(clusters):
         else:
             print(f"{i + 1}: {cluster.name} - Not found")
 
-def display(clusters):
+def display(clusters, weatherAPI):
     print("Displaying data, press enter to stop...")
     for cluster in clusters:
         cluster.display = True
+    weatherAPI.display = True
 
     stop = input()
     for cluster in clusters:
         cluster.display = False
+    weatherAPI.display = False
 
 """ Respond to user commands
     Parameters:
         threads (list[threading.Thread]): list of currently running threads
         clusters (list[cluster]): list of predefined clusters
 """
-def handle_input(threads, clusters):
+def handle_input(threads, clusters, weatherAPI, lock, logger):
     command = input("Enter command: ")
     if (type(command) == str):
         if (command == "help"):
@@ -141,7 +144,7 @@ def handle_input(threads, clusters):
         elif (command == "status"):
             status(clusters)
         elif (command == "display"):
-            display(clusters)
+            display(clusters, weatherAPI)
         elif (command == "kill"):
             for i in range(len(clusters)):
                 disable(threads, clusters, i)

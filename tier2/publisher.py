@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
 import threading
-#import bluetooth as bt
+import logging
+import logging.config
 
 from SensorCluster import *
 from API import *
@@ -33,15 +34,18 @@ if __name__ == "__main__":
     clusters = [None] * numClusters
     search_devices(clusterNames, addresses)
 
+    lock = threading.lock()
+    logger = logging.getLogger("logger")
+
     for i in range(numClusters):
-        clusters[i] = SensorCluster(addresses[i], clusterNames[i], topicBase, ip)
+        clusters[i] = SensorCluster(addresses[i], clusterNames[i], topicBase, ip, lock, logger)
         clusters[i].connect()
         newThread = threading.Thread(target=clusters[i].read)
         newThread.start()
         threads[i] = newThread
 
-    weatherAPI = API("http://api.weatherapi.com/v1/current.json", params)
+    weatherAPI = API("http://api.weatherapi.com/v1/current.json", params, topicBase, ip, lock, logger)
     weather_thread(threads, weatherAPI)
 
     while True:
-        handle_input(threads, clusters)
+        handle_input(threads, clusters, weatherAPI, lock, logger)
