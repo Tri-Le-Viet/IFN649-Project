@@ -25,6 +25,8 @@ if __name__ == "__main__":
         clusterNames = os.environ["CLUSTER_NAMES"].split(" ")
         numClusters = len(clusterNames)
         params = {"key":apikey, "q":location}
+        username = os.environ["USERNAME"]
+        password = os.environ["PASSWORD"]
     except KeyError:
         print("Missing environment variables, check .env before running")
         exit()
@@ -38,13 +40,15 @@ if __name__ == "__main__":
     logger = logging.getLogger("logger")
 
     for i in range(numClusters):
-        clusters[i] = SensorCluster(addresses[i], clusterNames[i], topicBase, ip, lock, logger)
+        clusters[i] = SensorCluster(addresses[i], clusterNames[i], topicBase, ip, lock,
+            logger, username, password)
         clusters[i].connect()
         newThread = threading.Thread(target=clusters[i].read)
         newThread.start()
         threads[i] = newThread
 
-    weatherAPI = API("http://api.weatherapi.com/v1/current.json", params, topicBase, ip, lock, logger)
+    weatherAPI = API("http://api.weatherapi.com/v1/current.json", params, topicBase, ip,
+        lock, logger, username, password)
     weather_thread(threads, weatherAPI)
 
     while True:

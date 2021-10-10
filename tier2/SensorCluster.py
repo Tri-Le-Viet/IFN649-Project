@@ -3,7 +3,7 @@ import bluetooth as bt
 import json
 
 class SensorCluster:
-    def __init__(self, address, name, topic, ip, lock, logger):
+    def __init__(self, address, name, topic, ip, lock, logger, username, password):
         self.address = address
         self.name = name
         self.topic = topic
@@ -14,6 +14,8 @@ class SensorCluster:
         self.found = (self.address != "")
         self.lock = lock
         self.logger = logger
+        self.mqttc = mqtt.Client()
+        mqtt.connect(self.mqttc, username, password, ip)
 
     def set_address(self, address):
         self.address = address
@@ -57,7 +59,7 @@ class SensorCluster:
                         self.log(self.logger.info, f"Received data from {self.name}")
                         data = json.loads(msg)
                         for entry in data:
-                            publish.single(f"{self.topic}/{entry}", data[entry], hostname=self.ip) #TODO: add auth
+                            self.mqttc.publish(f"{self.topic}/{entry}", data[entry], hostname=self.ip)
                         if self.display:
                             print(f"{self.name} data: {data}")
                     else:

@@ -1,10 +1,11 @@
-import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
 import threading
 import requests
 import time
+from mqtt_functions import mqtt_connect
 
 class API:
-    def __init__(self, link, params, topicBase, ip, lock, logger):
+    def __init__(self, link, params, topicBase, ip, lock, logger, username, password):
         self.link = link
         self.params = params
         self.topicName = topicBase + "/API_data"
@@ -15,6 +16,8 @@ class API:
         self.display = False
         self.running = threading.Event()
 
+        self.mqttc = mqtt.Client()
+        mqtt.connect(self.mqttc, username, password, ip)
 
     def fetch(self):
         while not self.running.is_set():
@@ -24,7 +27,7 @@ class API:
                 if (res.status_code == 200):
                     weatherData = res.json()
 
-                    publish.single(self.topicName, hostname=self.ip) #TODO: add auth
+                    self.mqttc.publish(self.topicName, hostname=self.ip) #TODO: add auth
 
                     if (self.display):
                         print(weatherData)
