@@ -115,10 +115,15 @@ def printHelp():
 def status(clusters):
     for i in range(len(clusters)):
         cluster = clusters[i]
-        if (cluster.found):
-            print(f"{i + 1}: {cluster.name} - Connected: {cluster.connected}")
-        else:
+        if not cluster.running.is_set()
+            if cluster.connected:
+                print(f"{i + 1}: {cluster.name} - Connected")
+            else:
+                print(f"{i + 1}: {cluster.name} - Disconnected, attempting reconnect")
+        elif not self.found:
             print(f"{i + 1}: {cluster.name} - Not found")
+        else:
+            print(f"{i + 1}: {cluster.name} - Disabled")
 
 def display(clusters, weatherAPI):
     print("Displaying data, press enter to stop...")

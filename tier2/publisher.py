@@ -37,18 +37,19 @@ if __name__ == "__main__":
     search_devices(clusterNames, addresses)
 
     lock = threading.lock()
-    logger = logging.getLogger("logger")
+    logging.config.fileConfig("logger.conf")
+    logger = logging.getLogger("root")
 
     for i in range(numClusters):
-        clusters[i] = SensorCluster(addresses[i], clusterNames[i], topicBase, ip, lock,
-            logger, username, password)
+        clusters[i] = SensorCluster(topicBase, ip, lock, logger, username, password,
+            addresses[i], clusterNames[i])
         clusters[i].connect()
         newThread = threading.Thread(target=clusters[i].read)
         newThread.start()
         threads[i] = newThread
 
-    weatherAPI = API("http://api.weatherapi.com/v1/current.json", params, topicBase, ip,
-        lock, logger, username, password)
+    weatherAPI = API(topicBase, ip, lock, logger, username, password,
+        "http://api.weatherapi.com/v1/current.json", params, "weather_API")
     weather_thread(threads, weatherAPI)
 
     while True:

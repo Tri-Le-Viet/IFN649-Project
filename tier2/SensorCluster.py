@@ -1,21 +1,14 @@
 import paho.mqtt.publish as publish
 import bluetooth as bt
 import json
+from MQTT_client import MQTT_client
 
-class SensorCluster:
-    def __init__(self, address, name, topic, ip, lock, logger, username, password):
+class SensorCluster(MQTT_client):
+    def __init__(self, topicBase, ip, lock, logger, username, password, address, name):
+        MQTT_client.__init__(self, topicBase, ip, lock, logger, username, password, name)
         self.address = address
-        self.name = name
-        self.topic = topic
-        self.ip = ip
-        self.display = False
         self.connected = False
-        self.running = True
         self.found = (self.address != "")
-        self.lock = lock
-        self.logger = logger
-        self.mqttc = mqtt.Client()
-        mqtt.connect(self.mqttc, username, password, ip)
 
     def set_address(self, address):
         self.address = address
@@ -23,27 +16,31 @@ class SensorCluster:
 
     def connect(self):
         if not self.found:
+            log(self.lock, self.logger.error, f"{self.name} - Need to know address before connecting")
             return 2
 
         try:
             self.sock = bt.BluetoothSocket(bt.RFCOMM)
             self.sock.connect((self.address, 1))
             self.connected = True
-            self.log(self.logger.info, f"Successfully connected to {self.name}")
+            log(self.lock, self.logger.info, f"Successfully connected to {self.name}")
             return 0
         except:
-            self.log(self.logger.error, f"Failed to connect to {self.name}")
+            log(self.lock, self.logger.error, f"Failed to connect to {self.name}")
             return 1
 
     def disconnect(self):
         if not self.running:
+            log(self.lock, self.logger.info, f"{self.name} - Already disconnected")
             return 2
 
         try:
             sock.close()
             self.connected = False
+            log(self.lock, self.logger.info, f"Successfully disconnected from {self.name}")
             return 0
         except:
+            log(self.lock, self.logger.error, f"Failed to disconnect from {self.name}")
             return 1
 
     def read(self):
@@ -59,7 +56,9 @@ class SensorCluster:
                         self.log(self.logger.info, f"Received data from {self.name}")
                         data = json.loads(msg)
                         for entry in data:
-                            self.mqttc.publish(f"{self.topic}/{entry}", data[entry], hostname=self.ip)
+                            topic = f"{self.topic}{entry}"
+                            rc = self.mqttc.publish(topic, data[entry], hostname=self.ip)
+                            self.log_publish(rc, topic)
                         if self.display:
                             print(f"{self.name} data: {data}")
                     else:
@@ -70,7 +69,3 @@ class SensorCluster:
             else: #attempt to reconnect if disconnected
                 self.log(self.logger.error, f"Attempting to reconnect to {self.name}")
                 self.connect()
-
-    def log(self, func, message):
-        with self.lock:
-            func(message)
