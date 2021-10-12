@@ -10,6 +10,7 @@ def log(lock, func, message):
         func(message)
 
 def on_connect(client, userdata, flags, rc):
+    print(f"rc is {rc}")
     logger = userdata["logger"]
     lock = userdata["lock"]
     name = userdata["name"]

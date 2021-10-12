@@ -1,11 +1,11 @@
-import paho.mqtt.publish as publish
 import bluetooth as bt
 import json
-from MQTT_client import MQTT_client
+import time
+from MQTT_client import *
 
 class SensorCluster(MQTT_client):
-    def __init__(self, topicBase, ip, lock, logger, username, password, address, name):
-        MQTT_client.__init__(self, topicBase, ip, lock, logger, username, password, name)
+    def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address):
+        super().__init__(topicBase, ip, port, lock, logger, username, password, name)
         self.address = address
         self.connected = False
         self.found = (self.address != "")
@@ -25,7 +25,8 @@ class SensorCluster(MQTT_client):
             self.connected = True
             log(self.lock, self.logger.info, f"Successfully connected to {self.name}")
             return 0
-        except:
+        except Exception as e:
+            print(e)
             log(self.lock, self.logger.error, f"Failed to connect to {self.name}")
             return 1
 
@@ -45,7 +46,7 @@ class SensorCluster(MQTT_client):
 
     def read(self):
         msg = ""
-        while(self.running):
+        while not self.running.is_set():
             if self.connected:
                 try:
                     byte = self.sock.recv(1)
@@ -53,19 +54,24 @@ class SensorCluster(MQTT_client):
                         msg = byte
                     elif byte == b"\n": #end of packet
                         msg = msg.decode("utf-8").strip("\r")
-                        self.log(self.logger.info, f"Received data from {self.name}")
+                        log(self.lock, self.logger.info, f"Received data from {self.name}")
                         data = json.loads(msg)
                         for entry in data:
-                            topic = f"{self.topic}{entry}"
-                            rc = self.mqttc.publish(topic, data[entry], hostname=self.ip)
+                            topic = f"{self.topicBase}{entry}"
+                            rc = self.mqttc.publish(topic, data[entry])[0]
                             self.log_publish(rc, topic)
                         if self.display:
                             print(f"{self.name} data: {data}")
+                        msg = ""
                     else:
                         msg += byte
                 except:
                     self.connected = False
-                    self.log(self.logger.error, f"Lost connection to {self.name}")
+                    log(self.lock, self.logger.error, f"Lost connection to {self.name}")
+                    
+            elif not self.found:
+                pass 
             else: #attempt to reconnect if disconnected
-                self.log(self.logger.error, f"Attempting to reconnect to {self.name}")
-                self.connect()
+                log(self.lock, self.logger.error, f"Attempting to reconnect to {self.name}")
+                if(self.connect() != 0):
+                    time.sleep(10) #wait 10 seconds and try again

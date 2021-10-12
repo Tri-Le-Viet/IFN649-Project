@@ -3,7 +3,7 @@ from bluetooth_functions import *
 def enable(threads, clusters, index):
     cluster = clusters[index]
     if (cluster.connect() == 0):
-        cluster.running = True
+        cluster.running.clear()
         new_thread = threading.Thread(target=cluster.read, args=(cluster,))
         threads[index] = new_thread
         new_thread.start()
@@ -19,7 +19,7 @@ def enable(threads, clusters, index):
 """
 def disable(threads, clusters, index):
     cluster = clusters[index]
-    cluster.running = False
+    cluster.running.set()
     cluster.disconnect()
     threads[index].join()
 
@@ -115,13 +115,13 @@ def printHelp():
 def status(clusters):
     for i in range(len(clusters)):
         cluster = clusters[i]
-        if not cluster.running.is_set()
+        if not cluster.running.is_set():
             if cluster.connected:
                 print(f"{i + 1}: {cluster.name} - Connected")
+            elif not cluster.found:
+                print(f"{i + 1}: {cluster.name} - Not found")
             else:
                 print(f"{i + 1}: {cluster.name} - Disconnected, attempting reconnect")
-        elif not self.found:
-            print(f"{i + 1}: {cluster.name} - Not found")
         else:
             print(f"{i + 1}: {cluster.name} - Disabled")
 

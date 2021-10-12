@@ -1,8 +1,12 @@
+import paho.mqtt.client as mqtt
+import threading
 from mqtt_functions import *
 
 class MQTT_client:
-    def __init__(self, topicBase, ip, lock, logger, username, password, name):
+    def __init__(self, topicBase, ip, port, lock, logger, username, password, name):
+        self.topicBase = topicBase
         self.ip = ip
+        self.port = port
         self.lock = lock
         self.logger = logger
         self.display = False
@@ -13,10 +17,7 @@ class MQTT_client:
         self.mqttc.on_connect = on_connect
         self.mqttc.on_disconnect = on_disconnect
         self.mqttc.connect(ip, port)
-
-    def shutdown(self):
-        self.mqttc.wait_for_publish()
-        self.mqttc.disconnect()
+        
 
     def log_publish(self, rc, topic):
         if rc == 0:
