@@ -12,12 +12,14 @@ class MQTT_client:
         self.display = False
         self.running = threading.Event()
         self.name = name
-        self.mqttc = mqtt.Client(userdata={"logger":logger,"lock":lock, "name":name})
-        self.mqttc.username_pw_set(username=username, password=password)
-        self.mqttc.on_connect = on_connect
-        self.mqttc.on_disconnect = on_disconnect
-        self.mqttc.connect(ip, port)
-        
+        mqttc = mqtt.Client(userdata={"logger":logger,"lock":lock, "name":name})
+        mqttc.username_pw_set(username=username, password=password)
+        mqttc.tls_set(ca_certs="certs/ca.crt", certfile='certs/server.crt', keyfile="certs/server.key")
+        mqttc.on_connect = on_connect
+        mqttc.on_disconnect = on_disconnect
+        mqttc.connect(ip, port)
+        self.mqttc = mqttc
+
 
     def log_publish(self, rc, topic):
         if rc == 0:
