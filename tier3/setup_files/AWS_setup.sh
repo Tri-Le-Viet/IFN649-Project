@@ -6,9 +6,9 @@ sudo yum install -y -q mariadb-server
 
 pip3 install paho-MQTT
 pip3 install dotenv
-pip3 install requests #is this necessary?
 pip3 install flask
 pip3 install SQLAlchemy
+pip3 install gunicorn
 
 #NOTE: please change the passwords from default values before implementing
 touch passwd
@@ -35,7 +35,8 @@ openssl req -new -out server.csr -key server.key
 #Sign certificate (server.crt)
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 360
 
-#move ca.crt to ca_certificates and server.crt and server.key to certs directory
+#move ca.crt, server.crt and server.key to certs directory
+#also copy them to client
 
 sudo mkdir /etc/mosquitto/certs
 sudo mv ca.crt /etc/mosquitto/certs
