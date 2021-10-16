@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import threading
 from mqtt_functions import *
 
-class MQTT_client:
+class MQTT_publisher:
     def __init__(self, topicBase, ip, port, lock, logger, username, password, name):
         self.topicBase = topicBase
         self.ip = ip
@@ -14,7 +14,7 @@ class MQTT_client:
         self.name = name
         mqttc = mqtt.Client(userdata={"logger":logger,"lock":lock, "name":name})
         mqttc.username_pw_set(username=username, password=password)
-        mqttc.tls_set(ca_certs="certs/ca.crt", certfile='certs/server.crt', keyfile="certs/server.key")
+        mqttc.tls_set(ca_certs="certs/ca.crt", certfile="certs/server.crt", keyfile="certs/server.key")
         mqttc.on_connect = on_connect
         mqttc.on_disconnect = on_disconnect
         mqttc.connect(ip, port)

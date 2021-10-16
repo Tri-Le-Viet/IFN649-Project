@@ -3,7 +3,7 @@ import json
 import time
 from MQTT_client import *
 
-class SensorCluster(MQTT_client):
+class SensorCluster(MQTT_publisher):
     def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address):
         super().__init__(topicBase, ip, port, lock, logger, username, password, name)
         self.address = address
@@ -68,9 +68,9 @@ class SensorCluster(MQTT_client):
                 except:
                     self.connected = False
                     log(self.lock, self.logger.error, f"Lost connection to {self.name}")
-                    
+
             elif not self.found:
-                pass 
+                pass
             else: #attempt to reconnect if disconnected
                 log(self.lock, self.logger.error, f"Attempting to reconnect to {self.name}")
                 if(self.connect() != 0):
