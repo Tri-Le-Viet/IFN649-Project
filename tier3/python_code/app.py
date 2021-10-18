@@ -12,7 +12,7 @@ try:
     stations = os.environ["STATIONS"].split(" ")
     numStations = len(stations)
     topics = os.environ["TOPICS"].split(" ")
-    port = os.environ["PORT"]
+    mqtt_port = os.environ["MQTT_PORT"]
     username = os.environ["USERNAME"]
     password = os.environ["PASSWORD"]
     db_username = os.environ["DB_USER"]
@@ -35,7 +35,7 @@ engine = sqlalchemy.create_engine(f"mariadb+mariadbconnector://{db_username}:{db
 latest_data = {}
 for station in stations:
     latest_data[station] = {}
-    mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, port, lock, logger, username, password, station))
+    mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, mqtt_port, lock, logger, username, password, station))
     mqtt_thread.start()
 
 
@@ -49,4 +49,4 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
 else:
     gunicorn_app = app
-    #gunicorn -b 0.0.0.0:8080 app:gunicorn_app > weather_server.log
+    #gunicorn -b 0.0.0.0:8080 app:gunicorn_app

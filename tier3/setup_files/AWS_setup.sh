@@ -3,12 +3,7 @@ sudo amazon-linux-extras install -y epel
 sudo yum update -y -q
 sudo yum install -y -q mosquitto
 sudo yum install -y -q mariadb-server
-
-pip3 install paho-MQTT
-pip3 install dotenv
-pip3 install flask
-pip3 install SQLAlchemy
-pip3 install gunicorn
+sudo yum install -y -q nginx
 
 #NOTE: please change the passwords from default values before implementing
 touch passwd
@@ -24,6 +19,8 @@ sudo mv acl /etc/mosquitto
 openssl genrsa -des3 -out ca.key 2048
 
 #CA certificate (ca.crt)
+#NOTE: remember to use host name not ip
+# can get host name by using command host public_ip_address
 openssl req -new -x509 -days 1826 -key ca.key -out ca.crt
 
 #Broker key pair (server.key)
@@ -49,3 +46,15 @@ sudo systemctl enable mosquitto
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 sudo mysql_secure_installation
+
+sudo mkdir /etc/nginx/sites-available
+sudo mkdir /etc/nginx/sites-enabled
+
+#python setup in virtual environment
+mkdir app_folder
+cd app_folder
+python3 -m venv app_environment
+source app_environment/bin/activate
+cd app_environment
+pip3 install paho-MQTT dotenv flask SQLAlchemy gunicorn
+mkdir templates
