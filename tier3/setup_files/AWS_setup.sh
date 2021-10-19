@@ -42,9 +42,11 @@ sudo mv server.key /etc/mosquitto/certs
 
 sudo systemctl start mosquitto # maybe comment out this to setup .conf file first
 sudo systemctl enable mosquitto
-
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
 sudo mysql_secure_installation
 
 sudo mkdir /etc/nginx/sites-available
@@ -58,3 +60,4 @@ source app_environment/bin/activate
 cd app_environment
 pip3 install paho-MQTT dotenv flask SQLAlchemy gunicorn
 mkdir templates
+deactivate
