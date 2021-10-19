@@ -3,7 +3,7 @@ import json
 import time
 from MQTT_client import *
 
-class SensorCluster(MQTT_publisher):
+class SensorNode(MQTT_publisher):
     def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address):
         super().__init__(topicBase, ip, port, lock, logger, username, password, name)
         self.address = address

@@ -1,5 +1,7 @@
 Remember: need to keep inbound ports 80 and 8883 open
 
+create mosquitto.conf and my_server files
+
 add line "include /etc/nginx/sites-enabled/*;" to http block of /etc/nginx/nginx.conf
 copy my_server to /etc/nginx/sites-available
 

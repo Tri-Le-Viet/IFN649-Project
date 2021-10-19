@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import logging
 import logging.config
 
-from SensorCluster import *
+from SensorNode import *
 from API import *
 from bluetooth_functions import search_devices
 from user_input import *
@@ -22,24 +22,24 @@ try:
     port = int(os.environ["PORT"])
     location = os.environ["LOCATION"]
     clusterNames = os.environ["CLUSTER_NAMES"].split(" ")
-    numClusters = len(clusterNames)
+    numNodes = len(clusterNames)
     username = os.environ["USERNAME"]
     password = os.environ["PASSWORD"]
 except KeyError:
     print("Missing environment variables, check .env before running")
     exit()
 
-addresses = [""] * numClusters
-threads = [None] * (numClusters + 1)
-clusters = [None] * numClusters
+addresses = [""] * numNodes
+threads = [None] * (numNodes + 1)
+clusters = [None] * numNodes
 search_devices(clusterNames, addresses)
 
 lock = threading.Lock()
 logging.config.fileConfig("logging.conf")
 logger = logging.getLogger("root")
 
-for i in range(numClusters):
-    clusters[i] = SensorCluster(topicBase, ip, port, lock, logger, username, password,
+for i in range(numNodes):
+    clusters[i] = SensorNode(topicBase, ip, port, lock, logger, username, password,
         clusterNames[i], addresses[i])
     clusters[i].connect()
     newThread = threading.Thread(target=clusters[i].read)

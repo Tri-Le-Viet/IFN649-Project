@@ -8,8 +8,7 @@ class MQTT_subscriber:
         self.updated = updated
         self.mqttc = mqtt.Client()
         self.mqttc.username_pw_set(username=username, password=password)
-        certs_dir = "/etc/mosquitto/certs"
-        self.mqttc.tls_set(ca_certs=f"{certs_dir}/ca.crt", certfile=f"{certs_dir}server.crt", keyfile=f"{certs_dir}server.key")
+        self.mqttc.tls_set(ca_certs="/etc/mosquitto/certs/ca.crt")
         self.mqttc.on_connect = self.subcscribe
         self.mqttc.on_message = self.read
         self.mqttc.connect("localhost", port)
