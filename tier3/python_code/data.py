@@ -1,10 +1,13 @@
 import threading
+from sqlalchemy.sql import text
+
 from MQTT_subscriber import *
 
 def collect_data(latest_data, update, engine, topics, port, lock, logger, username, password, name):
     data = {}
     subscribers = {}
     lastUpdated = {}
+    conn = engine.connect()
     for topic in topics:
         lastUpdated[topic] = dt.datetime.now()
         data[topic] = {}
@@ -14,6 +17,11 @@ def collect_data(latest_data, update, engine, topics, port, lock, logger, userna
 
     while True:
         for topic in topics:
-            if subscribers[topic].data[1] > lastUpdated[topic]:
-                pass
-                #
+            updateTime = subscribers[topic].data[1]
+            if updateTime > lastUpdated[topic]:
+                lastUpdated[topic] = updateTime
+                latest_data[name][topic] = subscribers[topic].data[0] # update data
+
+                #insert into db
+                query =  text("INSERT INTO weather_data (:a, :b, :c, :d, :e, :f, :g, :h, :i)")
+                conn.execute(query) #TODO: insert data or None if data is blank
