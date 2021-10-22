@@ -29,7 +29,7 @@ logger = logging.getLogger("root")
 #TODO: figure out how logging for gunicorn works
 
 update = threading.Event()
-engine = sqlalchemy.create_engine(f"mariadb+mariadbconnector://{db_username}:{db_password}!@127.0.0.1:3306/company") #TODO: change database name
+engine = sqlalchemy.create_engine(f"mysql+pymysql://{db_username}:{db_password}@localhost:3306/weather") #TODO: change database name
 conn = engine.connect()
 
 latest_data = {}

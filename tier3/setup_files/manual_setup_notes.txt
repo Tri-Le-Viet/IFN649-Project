@@ -1,9 +1,9 @@
 Remember: need to keep inbound ports 80 and 8883 open
+If using scp to copy from windows need to do the following:
+sudo yum install dos2unix
+dos2unix AWS_setup.sh
 
-create mosquitto.conf and my_server files
-
-add line "include /etc/nginx/sites-enabled/*;" to http block of /etc/nginx/nginx.conf
-copy my_server to /etc/nginx/sites-available
+Otherwise can just scp from raspberry pi
 
 run the following to symlink my-server to sites-enabled:
   sudo ln -s /etc/nginx/sites-available/my-server /etc/nginx/sites-enabled/

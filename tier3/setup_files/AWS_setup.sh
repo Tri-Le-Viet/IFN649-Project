@@ -4,9 +4,12 @@ sudo yum update -y -q
 sudo yum install -y -q mosquitto
 sudo yum install -y -q mariadb-server
 sudo yum install -y -q nginx
+sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+sudo yum -y -q localinstall mysql57-community-release-el7-11.noarch.rpm
+sudo yum -y -q install mysql-community-server
 
 ##MQTT setup
-sudo rm /etc/mosquitto *.*
+sudo rm /etc/mosquitto/*.*
 sudo mv mosquitto.conf /etc/mosquitto.conf
 #NOTE: please change the passwords from default values before implementing
 touch passwd
@@ -37,29 +40,31 @@ sudo mv ca.crt /etc/mosquitto/certs
 sudo mv server.crt /etc/mosquitto/certs
 sudo mv server.key /etc/mosquitto/certs
 
-
 ## nginx setup
-#TODO: add sed command here after testing
 sudo mkdir /etc/nginx/sites-available
 sudo mkdir /etc/nginx/sites-enabled
 sudo mv my_server /etc/nginx/sites-available
 sudo sudo ln -s /etc/nginx/sites-available/my-server /etc/nginx/sites-enabled/
 
-#python setup in virtual environment
+##python setup in virtual environment
 mkdir app_folder
 cd app_folder
 python3 -m venv app_environment
 source app_environment/bin/activate
 cd app_environment
-pip3 install paho-MQTT dotenv flask SQLAlchemy gunicorn
+pip3 install --upgrade pip
+pip3 install paho-MQTT python-dotenv flask  gunicorn SQLAlchemy pymysql
 mkdir templates
 deactivate
 
 sudo systemctl start mosquitto
 sudo systemctl enable mosquitto
-sudo systemctl start mariadb
-sudo systemctl enable mariadb
+sudo systemctl start mysqld
+sudo systemctl enable mysqld
 sudo systemctl start nginx
 sudo systemctl enable nginx
 
+##mySQL setup
+clear
+sudo grep 'temporary password' /var/log/mysqld.log
 sudo mysql_secure_installation

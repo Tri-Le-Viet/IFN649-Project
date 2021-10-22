@@ -24,4 +24,4 @@ def collect_data(latest_data, update, engine, topics, port, lock, logger, userna
 
                 #insert into db
                 query =  text("INSERT INTO weather_data (:a, :b, :c, :d, :e, :f, :g, :h, :i)")
-                conn.execute(query) #TODO: insert data or None if data is blank
+                conn.execute(query) #TODO: insert data or None if data is blank, using extra args a= .., b=.. etc.
