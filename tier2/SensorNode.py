@@ -1,14 +1,17 @@
+from Cryptodome.Cipher import AES
 import bluetooth as bt
 import json
 import time
+
 from MQTT_client import *
 
 class SensorNode(MQTT_publisher):
-    def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address):
+    def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address, keyfc):
         super().__init__(topicBase, ip, port, lock, logger, username, password, name)
         self.address = address
         self.connected = False
         self.found = (self.address != "")
+        self.cipher = AES.new(key, AES.MODE_ECB)
 
     def set_address(self, address):
         self.address = address
@@ -52,16 +55,21 @@ class SensorNode(MQTT_publisher):
                     byte = self.sock.recv(1)
                     if byte == b"{": # new packet
                         msg = byte
-                    elif byte == b"\n": #end of packet
-                        msg = msg.decode("utf-8").strip("\r")
+                    elif byte == b"\r" byte ==b"\n": #end of packet
+                        plaintext = self.cipher.decrypt(msg).decode()
                         log(self.lock, self.logger.info, f"Received data from {self.name}")
-                        data = json.loads(msg)
-                        for entry in data:
-                            topic = f"{self.topicBase}{entry}"
-                            rc = self.mqttc.publish(topic, data[entry])[0]
-                            self.log_publish(rc, topic)
-                        if self.display:
-                            print(f"{self.name} data: {data}")
+                        try:
+                            data = json.loads(plaintext)
+                            for entry in data:
+                                topic = f"{self.topicBase}{entry}"
+                                rc = self.mqttc.publish(f"{self.name}{topic}", data[entry])[0]
+                                self.log_publish(rc, topic)
+                                if self.display:
+                                    print(f"{self.name} data: {data}")
+                                    self.mqttc.publish(f"{self.name}warning", 1)
+                        except:
+                            log(self.lock, self.logger.error, f"Data from {self.name} invalid")
+                            self.mqttc.publish()
                         msg = ""
                     else:
                         msg += byte
