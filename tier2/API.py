@@ -5,6 +5,7 @@ from MQTT_publisher import *
 class API(MQTT_publisher):
     def __init__(self, topicBase, ip, port, lock, logger, username, password, name, link, params):
         super().__init__(topicBase, ip, port, lock, logger, username, password, name)
+        print(f"{self.topicBase}{self.name}")
         self.link = link
         self.params = params
 
