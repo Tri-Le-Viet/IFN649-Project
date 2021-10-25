@@ -75,6 +75,7 @@ void loop() {
       append_str(&count, data, key, small, size);
       append_single(&count, data, key, ',');
     }
+    
     append_str(&count, data, key, "\"seq\":", 6);
     char seqstr[BUFFER_SIZE];
     int size = snprintf(seqstr, BUFFER_SIZE, "%d", seq);
@@ -85,7 +86,7 @@ void loop() {
       append_single(&count, data, key, ' ');
     }
     seq++;
-    Serial1.println();
+    Serial1.print('\n');
     lastTimeSent = currentTime;
   }
 }

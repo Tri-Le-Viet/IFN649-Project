@@ -48,17 +48,15 @@ class SensorNode(MQTT_publisher):
             return 1
 
     def read(self):
-        msg = ""
+        msg = b""
         while not self.running.is_set():
             if self.connected:
                 try:
                     byte = self.sock.recv(1)
-                    if byte == b"{": # new packet
-                        msg = byte
-                    elif byte == b"\r" or byte == b"\n": #end of packet
-                        plaintext = self.cipher.decrypt(msg).decode()
+                    if byte == b"\n" and len(msg) % 16 == 0: #end of packet
                         log(self.lock, self.logger.info, f"Received data from {self.name}")
                         try:
+                            plaintext = self.cipher.decrypt(msg).decode()
                             data = json.loads(plaintext)
                             for entry in data:
                                 topic = f"{self.topicBase}{entry}"
@@ -68,9 +66,9 @@ class SensorNode(MQTT_publisher):
                                     print(f"{self.name} data: {data}")
                                     self.mqttc.publish(f"{self.name}warning", 1)
                         except:
-                            log(self.lock, self.logger.error, f"Data from {self.name} invalid")
+                            log(self.lock, self.logger.error, f"Data from {self.name} was invalid")
                             self.mqttc.publish()
-                        msg = ""
+                        msg = b""
                     else:
                         msg += byte
                 except:
