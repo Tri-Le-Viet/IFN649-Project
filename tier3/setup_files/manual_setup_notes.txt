@@ -1,9 +1,11 @@
-Remember: need to keep inbound ports 80 and 8883 open
+Remember: need to keep inbound ports 80, 443 and 8883 open
 If using scp to copy from windows need to do the following:
 sudo yum install dos2unix
 dos2unix AWS_setup.sh
 
 Otherwise can just scp from raspberry pi
+
+Once in mySQL run source db_setup.sql to setup database (pretty self-explanatory)
 
 run the following to symlink my-server to sites-enabled:
   sudo ln -s /etc/nginx/sites-available/my-server /etc/nginx/sites-enabled/

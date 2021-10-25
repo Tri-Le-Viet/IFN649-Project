@@ -68,3 +68,4 @@ sudo systemctl enable nginx
 clear
 sudo grep 'temporary password' /var/log/mysqld.log
 sudo mysql_secure_installation
+mysql -u root -p

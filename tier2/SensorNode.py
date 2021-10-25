@@ -12,6 +12,7 @@ class SensorNode(MQTT_publisher):
         self.connected = False
         self.found = (self.address != "")
         self.cipher = AES.new(bytes(key, "utf-8"), AES.MODE_ECB)
+        self.seq = 0
 
     def set_address(self, address):
         self.address = address
@@ -58,16 +59,23 @@ class SensorNode(MQTT_publisher):
                         try:
                             plaintext = self.cipher.decrypt(msg).decode()
                             data = json.loads(plaintext)
-                            for entry in data:
-                                topic = f"{self.topicBase}{entry}"
-                                rc = self.mqttc.publish(f"{self.name}{topic}", data[entry])[0]
-                                self.log_publish(rc, topic)
-                                if self.display:
-                                    print(f"{self.name} data: {data}")
-                                    self.mqttc.publish(f"{self.name}warning", 1)
+                            if data["seq"] <= self.seq: # replayed packet
+                                log(self.lock, self.logger.error, f"Data from {self.name} was outdated")
+                                self.mqttc.publish(f"{self.name}warning", 1)
+                            else:
+                                self.seq = data.pop("seq") # update sequence number
+                                for entry in data:
+                                    topic = f"{self.topicBase}{entry}"
+                                    rc = self.mqttc.publish(f"{self.name}{topic}", data[entry])[0]
+                                    self.log_publish(rc, topic)
+                                    if self.display:
+                                        print(f"{self.name} data: {data}")
+
                         except:
                             log(self.lock, self.logger.error, f"Data from {self.name} was invalid")
-                            self.mqttc.publish()
+                            self.mqttc.publish(f"{self.name}warning", 1)
+                        msg = b""
+                    elif byte == b"\n" and len(msg) > 200: # something has gone wrong so just reset
                         msg = b""
                     else:
                         msg += byte
