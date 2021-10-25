@@ -44,7 +44,8 @@
 		  <td align='center' valign="middle">{{data["Windspeed"] + " kts"}}</td>
 		</tr>
 		<tr>
-		  <td colspan="2" align='center' valign="middle"><a href={{"/history.html?station="+name}}>History</a></td>
+			{% set link =  "/history?station=" + station.replace(' ', '_')%}
+		  <td colspan="2" align='center' valign="middle"><a href={{link}}>History</a></td>
 
 		</tr>
 	  </table>
