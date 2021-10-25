@@ -66,14 +66,12 @@ class SensorNode(MQTT_publisher):
                                 self.seq = data.pop("seq") # update sequence number
                                 for entry in data:
                                     topic = f"{self.topicBase}{entry}"
-                                    print(topic)
                                     rc = self.mqttc.publish(topic, data[entry])[0]
                                     self.log_publish(rc, topic)
                             if self.display:
                                 print(f"{self.name} data: {data}")
 
                         except:
-                            print(msg)
                             log(self.lock, self.logger.error, f"Data from {self.name} was invalid")
                             self.mqttc.publish(f"{self.topicBase}warning", 1)
                         msg = b""
