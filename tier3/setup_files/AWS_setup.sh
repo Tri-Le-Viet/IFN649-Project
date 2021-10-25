@@ -21,7 +21,7 @@ deactivate
 
 ##MQTT setup
 sudo rm /etc/mosquitto/*.*
-sudo mv mosquitto.conf /etc/mosquitto.conf
+sudo mv mosquitto.conf /etc/mosquitto/
 #NOTE: please change the passwords from default values before implementing
 touch passwd
 mosquitto_passwd -b passwd publisher 1234
