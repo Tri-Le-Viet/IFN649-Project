@@ -12,6 +12,7 @@ try:
     station_names = os.environ["STATIONS"].split(" ")
     numStations = len(stations)
     topics = os.environ["TOPICS"].split(" ")
+    hostname = os.environ["HOST_NAME"]
     mqtt_port = os.environ["MQTT_PORT"]
     username = os.environ["USERNAME"]
     password = os.environ["PASSWORD"]
@@ -38,7 +39,7 @@ for station in station_names:
     if (station == "QUT_Gardens_Point"):
         stations[station] = True
         latest_data[station] = {}
-        mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, mqtt_port, lock, logger, username, password, station))
+        mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, hostname, mqtt_port, lock, logger, username, password, station))
         mqtt_thread.start()
     else:
         stations[station] = False
@@ -57,7 +58,6 @@ def view():
     return render_template("view.html", data=latest_data[station])
 
 @app.route("/data")
-def
 
 @app.route("/history")
 def history():

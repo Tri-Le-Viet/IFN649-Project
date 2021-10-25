@@ -1,9 +1,10 @@
 import threading
 from sqlalchemy.sql import text
+import time
 
 from MQTT_subscriber import *
 
-def collect_data(latest_data, update, engine, topics, port, lock, logger, username, password, name):
+def collect_data(latest_data, update, engine, topics, hostname, port, lock, logger, username, password, name):
     data = {}
     subscribers = {}
     lastUpdated = {}
@@ -11,9 +12,8 @@ def collect_data(latest_data, update, engine, topics, port, lock, logger, userna
     for topic in topics:
         lastUpdated[topic] = dt.datetime.now()
         data[topic] = {}
-        subscriber = MQTT_subscriber(data[topic], port, lock, logger, username, password, f"{name}{topic}", threading.Event())
+        subscriber = MQTT_subscriber(data[topic], hostname, port, lock, logger, username, password, f"{name}{topic}")
         subscribers.append(subscriber)
-        #subscriber_thread = threading.Thread(target=subscriber)
 
     while True:
         updated = False
@@ -22,10 +22,14 @@ def collect_data(latest_data, update, engine, topics, port, lock, logger, userna
             if updateTime > lastUpdated[topic]:
                 updated = True
                 lastUpdated[topic] = updateTime
-                latest_data[name][topic] = subscribers[topic].data[0] # update data
-
+                latest_data[name][topic] = subscribers[topic].data[0] # update datalist
 
         if updated:
+            latest_data["Dew point"] = 5 #TODO: add calculation here
             update.set()
-            query =  text("INSERT INTO weather_data (:a, :b, :c, :d, :e, :f, :g, :h, :i)")
-            conn.execute(query) #TODO: insert data or None if data is blank, using extra args a= .., b=.. etc.
+            query =  text("INSERT INTO weather_data (:a, :b, :c, :d, :e, :f, :g, :h)")
+            conn.execute(query, a=dt.datetime.now(), b=name, c=latest_data["Temperature"],
+                d=latest_data["Humidity"], e=latest_data["Heat Index"], f=latest_data["Dew Point"],
+                g=latest_data["Heading"], h=latest_data["Wind Speed"])
+
+            time.sleep(10)
