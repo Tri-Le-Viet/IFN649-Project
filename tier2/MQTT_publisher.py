@@ -14,7 +14,7 @@ class MQTT_publisher:
         self.name = name
         mqttc = mqtt.Client(userdata={"logger":logger,"lock":lock, "name":name})
         mqttc.username_pw_set(username=username, password=password)
-        mqttc.tls_set("certs/ca.crt")
+        mqttc.tls_set("ca.crt")
         mqttc.on_connect = on_connect
         mqttc.on_disconnect = on_disconnect
         mqttc.connect(ip, port)

@@ -68,8 +68,8 @@ class SensorNode(MQTT_publisher):
                                     topic = f"{self.topicBase}{entry}"
                                     rc = self.mqttc.publish(f"{self.name}{topic}", data[entry])[0]
                                     self.log_publish(rc, topic)
-                                    if self.display:
-                                        print(f"{self.name} data: {data}")
+                            if self.display:
+                                print(f"{self.name} data: {data}")
 
                         except:
                             log(self.lock, self.logger.error, f"Data from {self.name} was invalid")
