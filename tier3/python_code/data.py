@@ -5,15 +5,20 @@ import time
 from MQTT_subscriber import *
 
 def collect_data(latest_data, update, engine, topics, hostname, port, lock, logger, username, password, name):
-    data = {}
+    formatted_name = name.replace('_', ' ')
     subscribers = {}
     lastUpdated = {}
+    latest = {}
+    latest_data[name] = latest
     conn = engine.connect()
     for topic in topics:
-        lastUpdated[topic] = dt.datetime.now()
-        data[topic] = {}
-        subscriber = MQTT_subscriber(data[topic], hostname, port, lock, logger, username, password, f"{name}{topic}")
-        subscribers.append(subscriber)
+        current = dt.datetime.now()
+        lastUpdated[topic] = current
+        latest[topic] = None
+        subscriber = MQTT_subscriber([None, current], hostname, port, lock, logger, username, password, f"{name}/{topic}")
+        subscribers[topic] = subscriber
+        sub_thread = threading.Thread(target=subscriber.conn)
+        sub_thread.start()
 
     while True:
         updated = False
@@ -22,14 +27,16 @@ def collect_data(latest_data, update, engine, topics, hostname, port, lock, logg
             if updateTime > lastUpdated[topic]:
                 updated = True
                 lastUpdated[topic] = updateTime
-                latest_data[name][topic] = subscribers[topic].data[0] # update datalist
+                latest[topic] = subscribers[topic].data[0] # update datalist
 
         if updated:
-            latest_data["Dew point"] = 5 #TODO: add calculation here
+            latest["Dew Point"] = 5.0 #TODO: add calculation here
             update.set()
-            query =  text("INSERT INTO weather_data (:a, :b, :c, :d, :e, :f, :g, :h)")
-            conn.execute(query, a=dt.datetime.now(), b=name, c=latest_data["Temperature"],
-                d=latest_data["Humidity"], e=latest_data["Heat Index"], f=latest_data["Dew Point"],
-                g=latest_data["Heading"], h=latest_data["Wind Speed"])
+            #TODO remove underscore from Heat Index
+            query =  text("INSERT INTO weather_data VALUES (:a, :b, :c, :d, :e, :f, :g, :h, :i, :j)")
+            #TODO: fix query
+            #conn.execute(query, a=dt.datetime.now(), b=formatted_name, c=latest["Temperature"],
+            #    d=latest["Humidity"], e=latest["Heat_Index"], f=latest["Dew Point"],
+                #g=latest["Heading"], h=latest["Windspeed"], i=None, j=None) #TODO add i and j
 
             time.sleep(10)

@@ -9,13 +9,14 @@ CREATE TABLE stations (
 
 CREATE TABLE weather_data (
   time DATETIME NOT NULL,
-  station_name CHAR(3) NOT NULL,
+  station_name VARCHAR(255) NOT NULL,
   temperature FLOAT,
   humidity FLOAT,
   heat_index FLOAT,
   dew_point FLOAT,
   wind_direction FLOAT,
-  average_wind_speed FLOAT,
+  windspeed FLOAT,
+  gusts FLOAT,
   warnings VARCHAR(255),
   PRIMARY KEY (station_name, time),
   FOREIGN KEY (station_name) REFERENCES stations (name)

@@ -16,8 +16,13 @@ source app_environment/bin/activate
 cd app_environment
 pip3 install --upgrade pip
 pip3 install paho-MQTT python-dotenv flask  gunicorn SQLAlchemy pymysql
+mkdir code
+cd code
 mkdir templates
+mv ~/tier3/python_code .
 deactivate
+
+mv ~
 
 ##MQTT setup
 sudo rm /etc/mosquitto/*.*

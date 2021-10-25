@@ -8,20 +8,22 @@
 <body>
 <div id="logo"><img id="logo_img" src="weatherapi.png" alt="weatherlogo"></div>
 <div class="container" >
-    <input type="text" class="search" placeholder="Search for station..." list="stations" oninput="updateSearch(this)"> 
+    <input type="text" class="search" placeholder="Search for station..." list="stations" oninput="updateSearch(this)">
 		<datalist id="stations">
-			<option value="QUT Station" class="options">2 George St, Brisbane City QLD 4000</option>
-			<option value="CBD Council Station" class="options">(Offline)</option>
-		    <option value="UQ Station" class="options">(Offline)</option>
-			<option value="Placeholder Station" class="options">(Offline)</option>
-			<option value="Griffith University Station" class="options">(Offline)</option>
+			{% for station in stations %}
+				<option value={{station}} class="options"></option>
+			{% endfor %}
 		</datalist>
 	</input>
 </div>
  <div>
-  <div class="station" id='QUT Station'>
-    <h1 class="text-h-center text-v-center stationNameText"><a href="./view.html?station=QUT_GP">QUT Station</a></h1>
-  </div>
+ {% for station in stations %}
+ 	{% set link =  "/view?station=" + station.replace(' ', '_')%}
+  <div class="station" id={{station}}>
+		<h1 class="text-h-center text-v-center stationNameText"><a href={{link}}>{{station}}</a></h1>
+	</div>
+ {% endfor %}
+
   <div class="station" id="placeholder 7">
     <h1 class="text-h-center text-v-center stationNameText">placeholder 2</h1>
   </div>
@@ -46,18 +48,18 @@
   <div style="clear:both;"></div>
  </div>
  <script>
- /*
+
 	function updateSearch(searchText) {
-		var search = searchText.value;
+		var search = searchText.value.toLowerCase();
 		console.log(search);
 		var stations = document.getElementsByClassName("station");
 		for (let i = 0; i < stations.length; i++) {
-			if (stations[i].id.startsWith(search)) {
-				stations[i].display = "block";
+			if (stations[i].id.toLowerCase().startsWith(search)) {
+				stations[i].classList.remove("hidden");
 			} else {
-				stations[i].display = "none";
+				stations[i].classList.add("hidden");
 			}
 		}
-	}*/
+	}
 </script>
 </body>

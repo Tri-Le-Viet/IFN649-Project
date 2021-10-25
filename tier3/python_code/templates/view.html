@@ -8,8 +8,8 @@
 <body>
 <div id="logo"><img id="logo_img" src="weatherapi.png" alt="weatherlogo"></div>
   <div id="overalPage" >
-    <div id="titleSection"> 
-      <div class="Title"><h1>QUT Gardens Point</h1></div>	
+    <div id="titleSection">
+      <div class="Title"><h1>{{name}}</h1></div>
       <div id="insertApi"><img id="apiImg" src="https://cdn.weatherapi.com/weather/64x64/day/116.png"></img></div>
     </div>
 	<div style="clear:both;"></div>
@@ -17,35 +17,35 @@
       <table class="dataTable" cellpadding="10" border='0'>
 		<tr>
 		  <td align='center' valign="middle">Temperature</td>
-		  <td align='center' valign="middle">data[temp]</td>
+		  <td align='center' valign="middle">{{data["Temperature"] + "°C"}}</td>
 	    </tr>
 	    <tr>
 	      <td align='center' valign="middle">Humidity</td>
-	      <td align='center' valign="middle">data[hmdt]</td>
+	      <td align='center' valign="middle">{{data["Humidity"] + "%"}}</td>
 		</tr>
 		<tr>
 		  <td align='center' valign="middle">Heat Index</td>
-		  <td align='center' valign="middle">data[hidx]</td>
+		  <td align='center' valign="middle">{{data["Heat Index"]}}</td>
 		</tr>
 		<tr>
 		  <td align='center' valign="middle">Dew Point</td>
-		  <td align='center' valign="middle">data[dowp]</td>
+		  <td align='center' valign="middle">{{data["Dew Point"] + "°C"}}</td>
 		</tr>
 		<tr>
-		  <td align='center' valign="middle">Pressure</td>
-		  <td align='center' valign="middle">data[prsr]</td>
+		  <td align='center' valign="middle">Barometric Pressure</td>
+		  <td align='center' valign="middle">{{data["Pressure"] + " kPA"}}</td>
 		</tr>
 		<tr>
 		  <td align='center' valign="middle">Wind Direction</td>
-		  <td align='center' valign="middle">data[wdir]</td>
+		  <td align='center' valign="middle">{{data["Heading"] + "°"}}</td>
 	    </tr>
 		<tr>
 		  <td align='center' valign="middle">Wind Speed</td>
-		  <td align='center' valign="middle">data[wspd]</td>
+		  <td align='center' valign="middle">{{data["Windspeed"] + " kts"}}</td>
 		</tr>
 		<tr>
-		  <td colspan="2" align='center' valign="middle"><a href="/history.html">History</a></td>
-		   
+		  <td colspan="2" align='center' valign="middle"><a href={{"/history.html?station="+name}}>History</a></td>
+
 		</tr>
 	  </table>
 	</div>

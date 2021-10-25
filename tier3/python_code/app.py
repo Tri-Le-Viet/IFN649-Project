@@ -10,10 +10,12 @@ from data import *
 load_dotenv()
 try:
     station_names = os.environ["STATIONS"].split(" ")
-    numStations = len(stations)
+    for name in range(len(station_names)):
+        stations[name] = station_names[name].replace('_', ' ')
+    numStations = len(station_names)
     topics = os.environ["TOPICS"].split(" ")
-    hostname = os.environ["HOST_NAME"]
-    mqtt_port = os.environ["MQTT_PORT"]
+    hostname = os.environ["MQTT_HOST"]
+    mqtt_port = int(os.environ["MQTT_PORT"])
     username = os.environ["USERNAME"]
     password = os.environ["PASSWORD"]
     db_username = os.environ["DB_USER"]
@@ -28,21 +30,14 @@ logging.config.fileConfig("logging.conf")
 logger = logging.getLogger("root")
 
 update = threading.Event()
-engine = sqlalchemy.create_engine(f"mysql+pymysql://{db_username}:{db_password}@localhost:3306/weather") #TODO: change database name
+engine = sqlalchemy.create_engine(f"mysql+pymysql://{db_username}:{db_password}@localhost:3306/weather")
 conn = engine.connect()
 
 latest_data = {}
-stations = {}
-for station in station_names:
-    # mark station as active
-    # change this if more stations are added
-    if (station == "QUT_Gardens_Point"):
-        stations[station] = True
-        latest_data[station] = {}
-        mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, hostname, mqtt_port, lock, logger, username, password, station))
-        mqtt_thread.start()
-    else:
-        stations[station] = False
+for station in stations:
+    latest_data[station] = {}
+    mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, hostname, mqtt_port, lock, logger, username, password, station))
+    mqtt_thread.start()
 
 
 @app.route("/")
@@ -52,10 +47,11 @@ def home():
 @app.route("/view")
 def view():
     station = request.args.get("station")
+    station = station.replace('_', " ")
     if not station or station not in stations:
         return abort(404)
 
-    return render_template("view.html", data=latest_data[station])
+    return render_template("view.html", data=latest_data[station], name=station)
 
 @app.route("/data")
 
