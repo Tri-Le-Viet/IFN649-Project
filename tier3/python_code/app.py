@@ -9,7 +9,7 @@ from data import *
 
 load_dotenv()
 try:
-    stations = os.environ["STATIONS"].split(" ")
+    station_names = os.environ["STATIONS"].split(" ")
     numStations = len(stations)
     topics = os.environ["TOPICS"].split(" ")
     mqtt_port = os.environ["MQTT_PORT"]
@@ -21,28 +21,32 @@ except KeyError:
     print("Missing environment variables, check .env before running")
     exit()
 
-
 app = Flask(__name__.split('.')[0])
 lock = threading.Lock()
 logging.config.fileConfig("logging.conf")
 logger = logging.getLogger("root")
-#TODO: figure out how logging for gunicorn works
 
 update = threading.Event()
 engine = sqlalchemy.create_engine(f"mysql+pymysql://{db_username}:{db_password}@localhost:3306/weather") #TODO: change database name
 conn = engine.connect()
 
 latest_data = {}
-for station in stations:
-    latest_data[station] = {}
-    mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, mqtt_port, lock, logger, username, password, station))
-    mqtt_thread.start()
+stations = {}
+for station in station_names:
+    # mark station as active
+    # change this if more stations are added
+    if (station == "QUT_Gardens_Point"):
+        stations[station] = True
+        latest_data[station] = {}
+        mqtt_thread = threading.Thread(target=collect_data, args=(latest_data, update, engine, topics, mqtt_port, lock, logger, username, password, station))
+        mqtt_thread.start()
+    else:
+        stations[station] = False
 
 
-#TODO: check to see if we can move these to a separate file
 @app.route("/")
 def home():
-    return render_template("index.html") # note: can pass data by adding args data=data
+    return render_template("index.html", stations=stations)
 
 @app.route("/view")
 def view():
@@ -51,6 +55,9 @@ def view():
         return abort(404)
 
     return render_template("view.html", data=latest_data[station])
+
+@app.route("/data")
+def
 
 @app.route("/history")
 def history():

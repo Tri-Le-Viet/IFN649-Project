@@ -11,7 +11,7 @@ class SensorNode(MQTT_publisher):
         self.address = address
         self.connected = False
         self.found = (self.address != "")
-        self.cipher = AES.new(key, AES.MODE_ECB)
+        self.cipher = AES.new(bytes(key, "utf-8"), AES.MODE_ECB)
 
     def set_address(self, address):
         self.address = address
