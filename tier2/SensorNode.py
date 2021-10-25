@@ -55,7 +55,7 @@ class SensorNode(MQTT_publisher):
                     byte = self.sock.recv(1)
                     if byte == b"{": # new packet
                         msg = byte
-                    elif byte == b"\r" byte ==b"\n": #end of packet
+                    elif byte == b"\r" or byte == b"\n": #end of packet
                         plaintext = self.cipher.decrypt(msg).decode()
                         log(self.lock, self.logger.info, f"Received data from {self.name}")
                         try:
