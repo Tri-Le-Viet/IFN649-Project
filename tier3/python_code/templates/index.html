@@ -2,7 +2,62 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Placeholder title</title>
+	<link rel="stylesheet" href="mystyle.css">
+	<title>IoT-Enabled Weather Station</title>
 </head>
-
-<div>Hello, world!</div>
+<body>
+<div id="logo"><img id="logo_img" src="weatherapi.png" alt="weatherlogo"></div>
+<div class="container" >
+    <input type="text" class="search" placeholder="Search for station..." list="stations" oninput="updateSearch(this)"> 
+		<datalist id="stations">
+			<option value="QUT Station" class="options">2 George St, Brisbane City QLD 4000</option>
+			<option value="CBD Council Station" class="options">(Offline)</option>
+		    <option value="UQ Station" class="options">(Offline)</option>
+			<option value="Placeholder Station" class="options">(Offline)</option>
+			<option value="Griffith University Station" class="options">(Offline)</option>
+		</datalist>
+	</input>
+</div>
+ <div>
+  <div class="station" id='QUT Station'>
+    <h1 class="text-h-center text-v-center stationNameText"><a href="/view.html?station=QUT_GP">QUT Station</a></h1>
+  </div>
+  <div class="station" id="placeholder 7">
+    <h1 class="text-h-center text-v-center stationNameText">placeholder 2</h1>
+  </div>
+  <div class="station" id="placeholder 2">
+    <h1 class="text-h-center text-v-center stationNameText">placeholder 3</h1>
+  </div>
+  <div class="station" id="placeholder 3">
+    <h1 class="text-h-center text-v-center stationNameText">placeholder 4</h1>
+  </div>
+  <div class="station" id="placeholder 4">
+    <h1 class="text-h-center text-v-center stationNameText">placeholder 5</h1>
+  </div>
+  <div class="station" id="placeholder 5">
+    <h1 class="text-h-center text-v-center stationNameText">placeholder 6</h1>
+  </div>
+  <div class="station" id="placeholder 6">
+    <h1 class="text-h-center text-v-center stationNameText">placeholder 7</h1>
+  </div>
+  <div class="station" id="placeholder 1">
+    <h1 class="text-h-center text-v-center stationNameText">placeholder 1</h1>
+  </div>
+  <div style="clear:both;"></div>
+ </div>
+ <script>
+ /*
+	function updateSearch(searchText) {
+		var search = searchText.value;
+		console.log(search);
+		var stations = document.getElementsByClassName("station");
+		for (let i = 0; i < stations.length; i++) {
+			if (stations[i].id.startsWith(search)) {
+				stations[i].display = "block";
+			} else {
+				stations[i].display = "none";
+			}
+		}
+	}*/
+</script>
+</body>
