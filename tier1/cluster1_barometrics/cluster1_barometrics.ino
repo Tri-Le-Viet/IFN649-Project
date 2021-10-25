@@ -21,7 +21,7 @@ Adafruit_BMP280 bme; // I2C
 DHT dht(DHT_PIN, DHT_TYPE);
 
 double values[NUM_VALUES];
-const char *names[NUM_VALUES] = {"Humidity", "Temperature", "Heat Index", "Pressure"};
+const char *names[NUM_VALUES] = {"Humidity", "Temperature", "Heat_Index", "Pressure"};
 
 unsigned long lastTimeSent;
 const long timeInterval = 5000;

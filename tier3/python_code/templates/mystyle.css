@@ -30,9 +30,71 @@ html{
 }
 
 .station{
-	//margin-left:28%;
-	margin-left: 5%;
-	margin-right: 5%;
+	margin-left: 22.5%;
+	//margin-right: 5%;
 	width:20%;
 	float:left;
+}
+
+.stationNameText{
+	border-width:3px;
+	border-style:dashed;
+	border-color:#FFAC55;
+	padding:5px;
+}
+
+////////////////////////////////////////////////
+
+#overalPage{
+	position:absolute;
+	text-align:center;
+	margin:1em;
+	border-width:10px;
+	border-style:solid;
+	border-color:#FFAC55;
+	padding:5px;
+	margin:auto 30em;
+}
+
+.Title{
+	float:left;
+	padding:5px;
+	margin:auto 3em;
+	color:mediumblue;
+	text-shadow:black;
+	margin-top:2em;
+}
+
+#insertApi{
+	float:left;
+	padding:5px;
+}
+
+#titleSection{
+	height:10em;
+	width:40em;
+	margin:auto 30%;
+	border-width:7px;
+	border-style:dashed;
+	border-color:salmon;
+	padding:5px;
+	text-align:center;
+}
+
+.dataTable{
+	border-top:3px #FFD382 solid;
+	border-bottom:3px #82FFFF solid;
+}
+
+#apiImg{
+	width:10em;
+	height:10em;
+	margin:auto 1em;
+}
+
+#weatherData{
+	width:20em;
+	margin:3em 32%;
+	font-size:3em;
+	font-family: "Times New Roman", Times, serif;
 }

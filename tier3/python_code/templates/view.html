@@ -3,9 +3,52 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="mystyle.css">
-	<title>IoT-Enabled Weather Station</title>
+	<title>QUT Weather Station</title>
 </head>
 <body>
-	
+<div id="logo"><img id="logo_img" src="weatherapi.png" alt="weatherlogo"></div>
+  <div id="overalPage" >
+    <div id="titleSection"> 
+      <div class="Title"><h1>QUT Gardens Point</h1></div>	
+      <div id="insertApi"><img id="apiImg" src="https://cdn.weatherapi.com/weather/64x64/day/116.png"></img></div>
+    </div>
+	<div style="clear:both;"></div>
+	<div id="weatherData">
+      <table class="dataTable" cellpadding="10" border='0'>
+		<tr>
+		  <td align='center' valign="middle">Temperature</td>
+		  <td align='center' valign="middle">data[temp]</td>
+	    </tr>
+	    <tr>
+	      <td align='center' valign="middle">Humidity</td>
+	      <td align='center' valign="middle">data[hmdt]</td>
+		</tr>
+		<tr>
+		  <td align='center' valign="middle">Heat Index</td>
+		  <td align='center' valign="middle">data[hidx]</td>
+		</tr>
+		<tr>
+		  <td align='center' valign="middle">Dew Point</td>
+		  <td align='center' valign="middle">data[dowp]</td>
+		</tr>
+		<tr>
+		  <td align='center' valign="middle">Pressure</td>
+		  <td align='center' valign="middle">data[prsr]</td>
+		</tr>
+		<tr>
+		  <td align='center' valign="middle">Wind Direction</td>
+		  <td align='center' valign="middle">data[wdir]</td>
+	    </tr>
+		<tr>
+		  <td align='center' valign="middle">Wind Speed</td>
+		  <td align='center' valign="middle">data[wspd]</td>
+		</tr>
+		<tr>
+		  <td colspan="2" align='center' valign="middle"><a href="/history.html">History</a></td>
+		   
+		</tr>
+	  </table>
+	</div>
+  </div>
 </body>
 </html>
