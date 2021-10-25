@@ -1,6 +1,6 @@
 import requests
 import time
-from MQTT_client import *
+from MQTT_publisher import *
 
 class API(MQTT_publisher):
     def __init__(self, topicBase, ip, port, lock, logger, username, password, name, link, params):

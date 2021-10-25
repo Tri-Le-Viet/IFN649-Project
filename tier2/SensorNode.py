@@ -3,7 +3,7 @@ import bluetooth as bt
 import json
 import time
 
-from MQTT_client import *
+from MQTT_publisher import *
 
 class SensorNode(MQTT_publisher):
     def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address, key):
