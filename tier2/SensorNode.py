@@ -6,7 +6,7 @@ import time
 from MQTT_client import *
 
 class SensorNode(MQTT_publisher):
-    def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address, keyfc):
+    def __init__(self, topicBase, ip, port, lock, logger, username, password, name, address, key):
         super().__init__(topicBase, ip, port, lock, logger, username, password, name)
         self.address = address
         self.connected = False

@@ -25,6 +25,7 @@ try:
     numNodes = len(clusterNames)
     username = os.environ["USERNAME"]
     password = os.environ["PASSWORD"]
+    encryptionKey = os.environ["ENC_KEY"]
 except KeyError:
     print("Missing environment variables, check .env before running")
     exit()
@@ -40,7 +41,7 @@ logger = logging.getLogger("root")
 
 for i in range(numNodes):
     clusters[i] = SensorNode(topicBase, ip, port, lock, logger, username, password,
-        clusterNames[i], addresses[i])
+        clusterNames[i], addresses[i], encryptionKey)
     clusters[i].connect()
     newThread = threading.Thread(target=clusters[i].read)
     newThread.start()
