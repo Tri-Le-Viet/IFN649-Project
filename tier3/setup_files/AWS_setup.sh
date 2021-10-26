@@ -22,7 +22,7 @@ mkdir templates
 mv ~/tier3/python_code .
 deactivate
 
-mv ~
+cd ~
 
 ##MQTT setup
 sudo rm /etc/mosquitto/*.*

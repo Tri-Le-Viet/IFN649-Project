@@ -24,7 +24,7 @@ def collect_data(latest_data, update, engine, topics, hostname, port, lock, logg
 
     current = dt.datetime.now()
     lastUpdated["API"] = current
-    latest["API"] = None
+    latest["API"] = {}
     latest["Dew Point"] = None
     APISubscriber = MQTT_subscriber([None, current], hostname, port, lock, logger, username, password, f"{name}/API")
     sub_thread = threading.Thread(target=APISubscriber.conn)

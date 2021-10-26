@@ -51,11 +51,14 @@ def view():
     if not station or station not in stations:
         return abort(404)
 
+    data = lastest_data[station]
     convertedData = {}
     for key in data:
-        convertedData[key] = str(data[key])
+        if (key != "API"):
+            convertedData[key] = str(data[key])
+    convertedData["API"] = data["API"]
 
-    return render_template("view.html", data=latest_data[station], name=station)
+    return render_template("view.html", data=convertedData, name=station)
 
 @app.route("/data")
 
