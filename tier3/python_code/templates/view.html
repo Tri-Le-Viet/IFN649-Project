@@ -10,7 +10,8 @@
   <div id="overalPage" >
     <div id="titleSection">
       <div class="Title"><h1>{{name}}</h1></div>
-      <div id="insertApi"><img id="apiImg" src="https://cdn.weatherapi.com/weather/64x64/day/116.png"></img></div>
+      <div id="insertApi"><img id="apiImg" src={%"https:" + data["API"][icon]%}></img></div>
+			<div id="weatherCondition">{{data["api"]["text"]}}</div>
     </div>
 	<div style="clear:both;"></div>
 	<div id="weatherData">

@@ -48,7 +48,7 @@ for i in range(numNodes):
     threads[i] = newThread
 
 params = {"key":apikey, "q":location}
-weatherAPI = API(topicBase, ip, port, lock, logger, username, password, "weather_API",
+weatherAPI = API(topicBase, ip, port, lock, logger, username, password, "API",
     "http://api.weatherapi.com/v1/current.json", params)
 weather_thread(threads, weatherAPI)
 

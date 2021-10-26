@@ -5,7 +5,6 @@ from MQTT_publisher import *
 class API(MQTT_publisher):
     def __init__(self, topicBase, ip, port, lock, logger, username, password, name, link, params):
         super().__init__(topicBase, ip, port, lock, logger, username, password, name)
-        print(f"{self.topicBase}{self.name}")
         self.link = link
         self.params = params
 
@@ -14,7 +13,7 @@ class API(MQTT_publisher):
             try:
                 res = requests.get(self.link, params=self.params)
                 if (res.status_code == 200):
-                    weatherData = res.json()
+                    weatherData = res.json()["current"]["condition"]
                     topic = f"{self.topicBase}{self.name}"
                     rc = self.mqttc.publish(topic, str(weatherData))[0]
                     self.log_publish(rc, topic)
