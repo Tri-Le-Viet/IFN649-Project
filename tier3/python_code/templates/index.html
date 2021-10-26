@@ -2,11 +2,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="mystyle.css">
+	<link rel="stylesheet" href=static/css/"mystyle.css">
 	<title>IoT-Enabled Weather Station</title>
 </head>
 <body>
-<div id="logo"><img id="logo_img" src="weatherapi.png" alt="weatherlogo"></div>
+<div id="logo"><img id="logo_img" src="static/img/weatherapi.png" alt="weatherlogo"></div>
 <div class="container" >
     <input type="text" class="search" placeholder="Search for station..." list="stations" oninput="updateSearch(this)">
 		<datalist id="stations">
@@ -47,19 +47,6 @@
   </div>
   <div style="clear:both;"></div>
  </div>
- <script>
-
-	function updateSearch(searchText) {
-		var search = searchText.value.toLowerCase();
-		console.log(search);
-		var stations = document.getElementsByClassName("station");
-		for (let i = 0; i < stations.length; i++) {
-			if (stations[i].id.toLowerCase().startsWith(search)) {
-				stations[i].classList.remove("hidden");
-			} else {
-				stations[i].classList.add("hidden");
-			}
-		}
-	}
-</script>
+ <script src="static/js/search.js"></script>
 </body>
+</html>
