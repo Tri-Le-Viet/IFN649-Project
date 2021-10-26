@@ -68,7 +68,7 @@ sudo systemctl start mosquitto
 sudo systemctl enable mosquitto
 sudo systemctl start mysqld
 sudo systemctl enable mysqld
-sudo systemctl start nginx
+#sudo systemctl start nginx
 sudo systemctl enable nginx
 
 ##mySQL setup
