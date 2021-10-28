@@ -68,7 +68,7 @@ def history():
     if not station or station not in stations:
         return abort(404)
 
-    query = text("SELECT * FROM stations WHERE station_name=:x")
+    query = text("SELECT * FROM weather_data WHERE station_name=:x")
     historical_data = conn.execute(query, x=station).fetchall()
     return render_template("history.html", data=historical_data)
 

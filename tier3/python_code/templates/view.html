@@ -10,8 +10,8 @@
   <div id="overalPage" >
     <div id="titleSection">
       <div class="Title"><h1>{{name}}</h1></div>
-      <div id="insertApi"><img id="apiImg" src={{"https:" + data["API"][icon]}}></img></div>
-			<div id="weatherCondition">{{data["api"]["text"]}}</div>
+      <div id="insertApi"><img id="apiImg" src={{"https:" + data["API"]["icon"]}}></img></div>
+			<div id="weatherCondition">{{data["API"]["text"]}}</div>
     </div>
 	<div style="clear:both;"></div>
 	<div id="weatherData">
@@ -45,7 +45,7 @@
 		  <td align='center' valign="middle">{{data["Windspeed"] + " kts"}}</td>
 		</tr>
 		<tr>
-			{% set link =  "/history?station=" + station.replace(' ', '_')%}
+			{% set link =  "/history?station=" + name.replace(' ', '_')%}
 		  <td colspan="2" align='center' valign="middle"><a href={{link}}>History</a></td>
 
 		</tr>

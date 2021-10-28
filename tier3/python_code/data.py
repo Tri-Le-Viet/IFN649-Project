@@ -50,10 +50,10 @@ def collect_data(latest_data, update, engine, topics, hostname, port, lock, logg
                 latest["Dew Point"] = 17.271 * latest["Temperature"] / (237.7 + latest["Temperature"] + math.log(latest["Humidity"] / 100))
 
             update.set()
-            query =  text("INSERT INTO weather_data VALUES (:a, :b, :c, :d, :e, :f, :g, :h, :i, :j)")
+            query =  text("INSERT INTO weather_data VALUES (:a, :b, :c, :d, :e, :f, :g, :h)")
             #TODO: fix query
             #conn.execute(query, a=dt.datetime.now(), b=formatted_name, c=latest["Temperature"],
             #    d=latest["Humidity"], e=latest["Heat Index"], f=latest["Dew Point"],
-                #g=latest["Heading"], h=latest["Windspeed"], i=None, j=None) #TODO add i and j
+                #g=latest["Heading"], h=latest["Windspeed"])
 
             time.sleep(10)
